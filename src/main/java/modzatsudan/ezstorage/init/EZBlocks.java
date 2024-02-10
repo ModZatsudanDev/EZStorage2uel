@@ -4,6 +4,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import modzatsudan.ezstorage.Tags;
 import modzatsudan.ezstorage.block.BlockAccessTerminal;
 import modzatsudan.ezstorage.block.BlockBlankBox;
 import modzatsudan.ezstorage.block.BlockCondensedStorage;
@@ -21,7 +22,6 @@ import modzatsudan.ezstorage.block.BlockSuperStorage;
 import modzatsudan.ezstorage.block.BlockUltraStorage;
 import modzatsudan.ezstorage.block.EZBlock;
 import modzatsudan.ezstorage.config.EZConfig;
-import modzatsudan.ezstorage.ref.RefStrings;
 import modzatsudan.ezstorage.registry.IRegistryBlock;
 import modzatsudan.ezstorage.registry.RegistryHelper;
 import modzatsudan.ezstorage.tileentity.TileEntityEjectPort;
@@ -78,11 +78,11 @@ public class EZBlocks {
     /** Register the blocks and tile entities */
     private static void register() {
         RegistryHelper.registerBlocks(blocks);
-        GameRegistry.registerTileEntity(TileEntityStorageCore.class, RefStrings.MODID + ":TileEntityStorageCore");
-        GameRegistry.registerTileEntity(TileEntityInputPort.class, RefStrings.MODID + ":TileEntityInputPort");
-        GameRegistry.registerTileEntity(TileEntityEjectPort.class, RefStrings.MODID + ":TileEntityOutputPort");
-        GameRegistry.registerTileEntity(TileEntityExtractPort.class, RefStrings.MODID + ":TileEntityExtractPort");
-        GameRegistry.registerTileEntity(TileEntitySecurityBox.class, RefStrings.MODID + ":TileEntitySecurityBox");
+        GameRegistry.registerTileEntity(TileEntityStorageCore.class, Tags.MODID + ":TileEntityStorageCore");
+        GameRegistry.registerTileEntity(TileEntityInputPort.class, Tags.MODID + ":TileEntityInputPort");
+        GameRegistry.registerTileEntity(TileEntityEjectPort.class, Tags.MODID + ":TileEntityOutputPort");
+        GameRegistry.registerTileEntity(TileEntityExtractPort.class, Tags.MODID + ":TileEntityExtractPort");
+        GameRegistry.registerTileEntity(TileEntitySecurityBox.class, Tags.MODID + ":TileEntitySecurityBox");
     }
 
     /** Register model information */

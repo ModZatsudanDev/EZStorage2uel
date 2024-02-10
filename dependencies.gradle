@@ -22,5 +22,10 @@
  * For more details, see https://docs.gradle.org/8.0.1/userguide/java_library_plugin.html#sec:java_library_configurations_graph
  */
 dependencies {
+    // GregTechCEu
+    implementation rfg.deobf("curse.maven:codechicken-lib-1-8-242818:2779848") // CCL 3.2.3.358
+    implementation rfg.deobf("curse.maven:gregtech-ce-unofficial-557242:5050979") // CEu 2.8.6
 
+    // GregTech Food Option
+    runtimeOnly rfg.deobf("curse.maven:gregtech-food-option-477021:4904513") // GTFO 1.10.2
 }

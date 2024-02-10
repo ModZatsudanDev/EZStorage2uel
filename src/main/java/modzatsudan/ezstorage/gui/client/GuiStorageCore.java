@@ -1,8 +1,10 @@
 package modzatsudan.ezstorage.gui.client;
 
+import java.awt.*;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,11 +31,11 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import modzatsudan.ezstorage.EZStorage;
+import modzatsudan.ezstorage.Tags;
 import modzatsudan.ezstorage.config.EZConfig;
 import modzatsudan.ezstorage.gui.server.ContainerStorageCore;
 import modzatsudan.ezstorage.jei.JEIUtils;
 import modzatsudan.ezstorage.network.MessageCustomClick;
-import modzatsudan.ezstorage.ref.RefStrings;
 import modzatsudan.ezstorage.tileentity.TileEntityStorageCore;
 import modzatsudan.ezstorage.util.EZItemRenderer;
 import modzatsudan.ezstorage.util.EZStorageUtils;
@@ -55,7 +57,7 @@ public class GuiStorageCore extends GuiContainerEZ {
             "textures/gui/container/creative_inventory/tabs.png");
     private static final ResourceLocation searchBar = new ResourceLocation(
             "textures/gui/container/creative_inventory/tab_item_search.png");
-    private static final ResourceLocation sortGui = new ResourceLocation(RefStrings.MODID,
+    private static final ResourceLocation sortGui = new ResourceLocation(Tags.MODID,
             "textures/gui/custom_gui.png");
     private float currentScroll;
 
@@ -467,6 +469,7 @@ public class GuiStorageCore extends GuiContainerEZ {
             this.currentScroll = (mouseY - j1 - 7.5F) / (l1 - j1 - 15.0F);
             this.currentScroll = MathHelper.clamp(this.currentScroll, 0.0F, 1.0F);
             scrollTo(this.currentScroll);
+            this.searchField.setFocused(false);
         }
     }
 
@@ -499,6 +502,7 @@ public class GuiStorageCore extends GuiContainerEZ {
             if (mouseX >= elementX && mouseX <= elementX + this.searchField.width && mouseY >= elementY &&
                     mouseY <= elementY + this.searchField.height) {
                 if (mouseButton == 1 || GuiScreen.isShiftKeyDown()) {
+                    this.searchBoxChange("");
                     this.searchField.setText("");
                 }
                 this.searchField.setFocused(true);
@@ -509,7 +513,7 @@ public class GuiStorageCore extends GuiContainerEZ {
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
-    private Integer getSlotAt(int x, int y) {
+    public Integer getSlotAt(int x, int y) {
         int startX = this.guiLeft + 7;
         int startY = this.guiTop + 17;
 
@@ -561,10 +565,25 @@ public class GuiStorageCore extends GuiContainerEZ {
     }
 
     protected ResourceLocation getBackground() {
-        return new ResourceLocation(RefStrings.MODID + ":textures/gui/storage_scroll_gui.png");
+        return new ResourceLocation(Tags.MODID + ":textures/gui/storage_scroll_gui.png");
     }
 
     public int rowsVisible() {
         return 6;
+    }
+
+    public List<ItemGroup> getFilteredList() {
+        return this.filteredList;
+    }
+
+    public boolean isSearchFieldFocused() {
+        return this.searchField.isFocused();
+    }
+
+    public List<Rectangle> getJEIExclusionArea() {
+        if (this.tileEntity.hasSortBox) {
+            return Collections.singletonList(new Rectangle(getGuiLeft() - 108, getGuiTop(), 112, 72));
+        }
+        return null;
     }
 }

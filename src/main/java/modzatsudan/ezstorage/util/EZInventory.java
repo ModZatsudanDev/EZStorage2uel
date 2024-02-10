@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import modzatsudan.ezstorage.gui.server.InventoryExtractList;
+import modzatsudan.ezstorage.integration.gregtech.GTUtil;
 import modzatsudan.ezstorage.tileentity.TileEntityExtractPort.EnumListMode;
 import modzatsudan.ezstorage.tileentity.TileEntityStorageCore;
 
@@ -110,7 +111,17 @@ public class EZInventory {
             }
         }
 
-        return extractStack(group, size, peek);
+        if (size == 0) return ItemStack.EMPTY;
+
+        if (size < 1) {
+            if (type == 1) {
+                size = (((int) Math.min(stack.getMaxStackSize(), group.count)) + 2 - 1) / 2;
+            } else if (type == 2) {
+                size = 1;
+            }
+        }
+
+        return this.extractStack(group, size, peek);
     }
 
     /** Extract items on whitelist / blacklist match */
@@ -262,5 +273,51 @@ public class EZInventory {
     @Override
     public String toString() {
         return inventory.toString();
+    }
+
+    public ItemStack getItemWithoutExtractAt(int index) {
+        if (index >= this.inventory.size()) {
+            return ItemStack.EMPTY;
+        }
+        return this.inventory.get(index).itemStack;
+    }
+
+    public ItemStack input(ItemStack itemStack, int quantity, boolean sort) {
+        int stackCount = itemStack.getCount();
+        quantity = Math.min(itemStack.getCount(), quantity);
+
+        ItemStack inputStack = itemStack.copy();
+        inputStack.setCount(Math.min(stackCount, quantity));
+        ItemStack inputResult = ((EZInventory) (Object) this).input(inputStack, sort);
+        if (inputResult.isEmpty()) {
+            itemStack.shrink(quantity);
+        } else {
+            itemStack.setCount(stackCount - quantity + inputResult.getCount());
+        }
+        return itemStack;
+    }
+
+    public ItemStack getItemsForRecipeSync(ItemStack[] itemStacks) {
+        ItemStack result = this.getItems(itemStacks);
+        if (!result.isEmpty()) {
+            return result;
+        }
+
+        for (ItemStack searchItemStack : itemStacks) {
+            for (ItemGroup invItemGroup : this.inventory) {
+                int searchItemCount = searchItemStack.getCount();
+                if (GTUtil.stackEqualGT(searchItemStack, invItemGroup.itemStack) &&
+                        searchItemCount <= invItemGroup.count) {
+                    ItemStack retrieved = invItemGroup.itemStack.copy();
+                    retrieved.setCount(searchItemCount);
+                    invItemGroup.count -= searchItemCount;
+                    if (invItemGroup.count <= 0) {
+                        this.inventory.remove(invItemGroup);
+                    }
+                    return retrieved;
+                }
+            }
+        }
+        return ItemStack.EMPTY;
     }
 }

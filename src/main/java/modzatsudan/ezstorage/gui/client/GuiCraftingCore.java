@@ -4,8 +4,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import modzatsudan.ezstorage.Tags;
 import modzatsudan.ezstorage.gui.server.ContainerStorageCoreCrafting;
-import modzatsudan.ezstorage.ref.RefStrings;
 
 public class GuiCraftingCore extends GuiStorageCore {
 
@@ -28,6 +28,6 @@ public class GuiCraftingCore extends GuiStorageCore {
 
     @Override
     protected ResourceLocation getBackground() {
-        return new ResourceLocation(RefStrings.MODID + ":textures/gui/storage_crafting_gui.png");
+        return new ResourceLocation(Tags.MODID + ":textures/gui/storage_crafting_gui.png");
     }
 }

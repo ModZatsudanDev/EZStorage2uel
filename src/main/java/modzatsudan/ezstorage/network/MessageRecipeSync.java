@@ -18,7 +18,9 @@ import net.minecraftforge.oredict.OreDictionary;
 import io.netty.buffer.ByteBuf;
 import modzatsudan.ezstorage.EZStorage;
 import modzatsudan.ezstorage.gui.server.ContainerStorageCoreCrafting;
+import modzatsudan.ezstorage.integration.gregtech.GTUtil;
 import modzatsudan.ezstorage.tileentity.TileEntityStorageCore;
+import modzatsudan.ezstorage.util.EZInventory;
 
 /** The JEI crafting recipe server sync message */
 public class MessageRecipeSync implements IMessage {
@@ -88,7 +90,27 @@ public class MessageRecipeSync implements IMessage {
                     if (this.recipe[i] != null && this.recipe[i].length > 0) {
                         Slot slot = con.getSlotFromInventory(con.craftMatrix, i);
                         if (slot != null) {
-                            ItemStack retreived = tileEntity.inventory.getItems(this.recipe[i]);
+                            ItemStack retreived = tileEntity.inventory.getItemsForRecipeSync(this.recipe[i]);
+
+                            // Added
+                            if (!retreived.isEmpty()) {
+                                return;
+                            }
+
+                            for (ItemStack searchItemStack : this.recipe[i]) {
+                                for (ItemStack invItemStack : player.inventory.mainInventory) {
+                                    if (invItemStack.isEmpty()) {
+                                        continue;
+                                    }
+                                    if (EZInventory.stacksEqualOreDict(searchItemStack, invItemStack) ||
+                                            GTUtil.stackEqualGT(searchItemStack, invItemStack)) {
+                                        player.inventory.deleteStack(invItemStack);
+                                        slot.putStack(invItemStack);
+                                        return;
+                                    }
+                                }
+                            }
+
                             if (!retreived.isEmpty()) {
                                 slot.putStack(retreived);
                             }

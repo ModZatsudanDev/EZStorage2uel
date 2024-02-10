@@ -30,10 +30,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import modzatsudan.ezstorage.Tags;
 import modzatsudan.ezstorage.gui.server.ContainerExtractPort;
 import modzatsudan.ezstorage.gui.server.SlotExtractList;
 import modzatsudan.ezstorage.init.EZBlocks;
-import modzatsudan.ezstorage.ref.RefStrings;
 import modzatsudan.ezstorage.tileentity.TileEntityExtractPort;
 import modzatsudan.ezstorage.util.JointList;
 
@@ -41,7 +41,7 @@ import modzatsudan.ezstorage.util.JointList;
 @SideOnly(Side.CLIENT)
 public class GuiExtractPort extends GuiContainerEZ {
 
-    public static final ResourceLocation extractGuiTextures = new ResourceLocation(RefStrings.MODID,
+    public static final ResourceLocation extractGuiTextures = new ResourceLocation(Tags.MODID,
             "textures/gui/extract_port.png");
     private TileEntityExtractPort tileExtract;
     private GuiButton listMode;
@@ -315,7 +315,7 @@ public class GuiExtractPort extends GuiContainerEZ {
      * 
      * The z index is increased by 32 (and not decreased afterwards), and the item is then rendered at z=200.
      */
-    private void drawItemStack(ItemStack stack, int x, int y, String altText) {
+    protected void drawItemStack(ItemStack stack, int x, int y, String altText) {
         GlStateManager.translate(0.0F, 0.0F, 32.0F);
         this.zLevel = 200.0F;
         this.itemRender.zLevel = 200.0F;

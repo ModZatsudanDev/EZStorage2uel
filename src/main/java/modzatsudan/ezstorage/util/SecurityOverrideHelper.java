@@ -6,8 +6,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.text.TextComponentString;
 
+import modzatsudan.ezstorage.Tags;
 import modzatsudan.ezstorage.ref.Log;
-import modzatsudan.ezstorage.ref.RefStrings;
 import modzatsudan.ezstorage.tileentity.TileEntitySecurityBox.SecurePlayer;
 
 /** Helps with overrides for the security system */
@@ -29,8 +29,8 @@ public class SecurityOverrideHelper {
 
     /** Sends the op intervention notification */
     public static void sendOpNotification(EntityPlayerMP op, List<SecurePlayer> securePlayers) {
-        String to = "Operator " + op.getName() + " has overridden your " + RefStrings.NAME + " system lockout.";
-        String from = "You have overridden the lockout to the " + RefStrings.NAME + " system owned by " +
+        String to = "Operator " + op.getName() + " has overridden your " + Tags.MODNAME + " system lockout.";
+        String from = "You have overridden the lockout to the " + Tags.MODNAME + " system owned by " +
                 securePlayers.get(0).name + ".";
         sendMessageToSecurePlayers(to, from, securePlayers, op);
         Log.logger.info("Operator " + op.getName() + " has overridden the lockout to the storage system owned by " +

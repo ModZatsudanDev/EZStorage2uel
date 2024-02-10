@@ -101,7 +101,9 @@ public class TileEntityStorageCore extends TileEntityBase {
     /** Creates a block update and sends client data to update their filtered lists */
     public void updateInventory() {
         updateTileEntity();
-        EZStorage.nw.sendToDimension(new MessageFilterUpdate(this), world.provider.getDimension());
+        if (!this.world.isRemote) {
+            EZStorage.nw.sendToDimension(new MessageFilterUpdate(this), world.provider.getDimension());
+        }
     }
 
     /** Updates the tile entity position in the world and marks it to be saved */

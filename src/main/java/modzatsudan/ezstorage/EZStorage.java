@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
+import gregtech.GTInternalTags;
 import modzatsudan.ezstorage.config.EZConfig;
 import modzatsudan.ezstorage.events.CoreEvents;
 import modzatsudan.ezstorage.events.SecurityEvents;
@@ -23,13 +24,14 @@ import modzatsudan.ezstorage.ref.RefStrings;
 import modzatsudan.ezstorage.util.EZStorageUtils;
 
 /** EZStorage main mod class */
-@Mod(modid = RefStrings.MODID,
-     name = RefStrings.NAME,
-     version = RefStrings.VERSION,
+@Mod(modid = Tags.MODID,
+     name = Tags.MODNAME,
+     version = Tags.VERSION,
+     dependencies = GTInternalTags.DEP_VERSION_STRING + "after:gregtechfoodoption",
      acceptedMinecraftVersions = "[1.12, 1.13)")
 public class EZStorage {
 
-    @Mod.Instance(RefStrings.MODID)
+    @Mod.Instance(Tags.MODID)
     public static EZStorage instance;
 
     @SidedProxy(clientSide = RefStrings.CLIENT_PROXY, serverSide = RefStrings.SERVER_PROXY)
@@ -57,7 +59,7 @@ public class EZStorage {
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        EZStorageUtils.getModNameFromID(RefStrings.MODID); // build the mod map
+        EZStorageUtils.getModNameFromID(Tags.MODID); // build the mod map
         Log.logger.info("Loading complete.");
     }
 }

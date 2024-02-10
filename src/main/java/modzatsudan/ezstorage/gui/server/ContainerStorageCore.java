@@ -4,14 +4,12 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import org.jetbrains.annotations.NotNull;
 
 import modzatsudan.ezstorage.tileentity.TileEntityStorageCore;
 
@@ -19,6 +17,7 @@ import modzatsudan.ezstorage.tileentity.TileEntityStorageCore;
 public class ContainerStorageCore extends Container {
 
     public TileEntityStorageCore tileEntity;
+    private IInventory inventory;
 
     public ContainerStorageCore(EntityPlayer player, World world, int x, int y, int z) {
         this.tileEntity = ((TileEntityStorageCore) world.getTileEntity(new BlockPos(x, y, z)));
@@ -35,6 +34,7 @@ public class ContainerStorageCore extends Container {
 
         // the player inventory
         bindPlayerInventory(player.inventory);
+        this.inventory = inventory;
     }
 
     protected void bindPlayerInventory(InventoryPlayer inventoryPlayer) {
@@ -91,6 +91,17 @@ public class ContainerStorageCore extends Container {
             val = ItemStack.EMPTY; // use custom handler for clicks on the inventory
         } else {
             val = super.slotClick(slotId, dragType, clickTypeIn, player);
+            if (slotId >= 0) {
+                Slot slot = this.getSlot(slotId);
+                if (!(slot instanceof SlotCrafting) && clickTypeIn == ClickType.QUICK_MOVE &&
+                        slot.canTakeStack(player)) {
+                    ItemStack itemStack = slot.getStack();
+                    ItemStack result = this.tileEntity.inventory.input(itemStack, true);
+                    slot.onSlotChanged();
+                    super.detectAndSendChanges();
+                    val = result.copy();
+                }
+            }
             if (clickTypeIn == ClickType.QUICK_MOVE)
                 this.tileEntity.sortInventory(); // sort only on insert shift-click
         }
@@ -99,6 +110,54 @@ public class ContainerStorageCore extends Container {
 
     /** Click a custom slot to take or insert items */
     public @Nonnull ItemStack customSlotClick(int slotId, int clickedButton, int mode, EntityPlayer playerIn) {
+        // Added Code
+
+        int _type = 0;
+        if (clickedButton == 1) {
+            _type = (mode == 0) ? 1 : 2;
+        }
+
+        // isShiftLeftClick
+        if (clickedButton == 0 && mode == 1) {
+            int playerInventoryStartIndex = this.rowCount() * 9;
+            int playerInventoryEndIndex = playerInventoryStartIndex + playerIn.inventory.mainInventory.size();
+
+            if (playerIn.inventory.getFirstEmptyStack() < 0) {
+                ItemStack targetStack = this.tileEntity.inventory.getItemWithoutExtractAt(slotId);
+                int emptyCapacity = this.inventorySlots.subList(playerInventoryStartIndex, playerInventoryEndIndex)
+                        .stream().mapToInt(slot -> {
+                            ItemStack slotStack = slot.getStack();
+                            if (slotStack.isItemEqual(targetStack) &&
+                                    ItemStack.areItemStackTagsEqual(slotStack, targetStack)) {
+                                return slotStack.getMaxStackSize() - slotStack.getCount();
+                            }
+                            return 0;
+                        }).sum();
+
+                ItemStack retrievedStack = this.tileEntity.inventory.getItemsAt(slotId, _type,
+                        Math.min(emptyCapacity, targetStack.getMaxStackSize()));
+                if (!retrievedStack.isEmpty()) {
+                    this.mergeItemStack(retrievedStack, playerInventoryStartIndex, playerInventoryEndIndex, true);
+                }
+            } else {
+                ItemStack retrievedStack = this.tileEntity.inventory.getItemsAt(slotId, _type);
+                if (!retrievedStack.isEmpty()) {
+                    this.mergeItemStack(retrievedStack, playerInventoryStartIndex, playerInventoryEndIndex, true);
+                }
+            }
+        } else {
+            ItemStack heldStack = playerIn.inventory.getItemStack();
+            if (heldStack.isEmpty()) {
+                ItemStack retrievedStack = this.tileEntity.inventory.getItemsAt(slotId, _type);
+                playerIn.inventory.setItemStack(retrievedStack);
+            } else if (clickedButton == 0) {
+                playerIn.inventory.setItemStack(this.tileEntity.inventory.input(heldStack));
+            } else if (clickedButton == 1 && mode != 1) {
+                playerIn.inventory.setItemStack(this.tileEntity.inventory.input(heldStack, true));
+            }
+        }
+        // Added area
+
         int itemIndex = slotId;
         ItemStack heldStack = playerIn.inventory.getItemStack();
 
@@ -146,5 +205,10 @@ public class ContainerStorageCore extends Container {
     public void onContainerClosed(EntityPlayer playerIn) {
         super.onContainerClosed(playerIn);
         this.tileEntity.sortInventory();
+    }
+
+    @Override
+    public boolean canDragIntoSlot(@NotNull Slot slotIn) {
+        return !slotIn.inventory.equals(this.inventory);
     }
 }

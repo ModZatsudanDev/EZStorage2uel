@@ -13,10 +13,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
+import modzatsudan.ezstorage.Tags;
 import modzatsudan.ezstorage.gui.server.ContainerSecurityBox;
 import modzatsudan.ezstorage.init.EZBlocks;
 import modzatsudan.ezstorage.network.EZNetwork;
-import modzatsudan.ezstorage.ref.RefStrings;
 import modzatsudan.ezstorage.tileentity.TileEntitySecurityBox;
 import modzatsudan.ezstorage.tileentity.TileEntitySecurityBox.SecurePlayer;
 import modzatsudan.ezstorage.util.EZStorageUtils;
@@ -26,7 +26,7 @@ import modzatsudan.ezstorage.util.JointList;
 @SideOnly(Side.CLIENT)
 public class GuiSecurityBox extends GuiContainerEZ {
 
-    public static final ResourceLocation secureGuiTextures = new ResourceLocation(RefStrings.MODID,
+    public static final ResourceLocation secureGuiTextures = new ResourceLocation(Tags.MODID,
             "textures/gui/security_box.png");
     private TileEntitySecurityBox tileSecure;
     private static final int nButtons = 7;

@@ -3,8 +3,8 @@ package modzatsudan.ezstorage.config;
 import net.minecraftforge.common.config.Configuration;
 
 import modzatsudan.ezstorage.EZStorage;
+import modzatsudan.ezstorage.Tags;
 import modzatsudan.ezstorage.ref.Log;
-import modzatsudan.ezstorage.ref.RefStrings;
 
 /** The config settings */
 public class EZConfig {
@@ -50,7 +50,7 @@ public class EZConfig {
                 "Should dollies, which can move storage cores (while respecting security), be enabled?");
 
         jeiIntegration = config.getBoolean("JEI Integration", OPTIONS, true,
-                "Integrate " + RefStrings.NAME + " with JEI?");
+                "Integrate " + Tags.MODNAME + " with JEI?");
         if (config.hasChanged())
             config.save();
         Log.logger.info("Configuration loaded.");

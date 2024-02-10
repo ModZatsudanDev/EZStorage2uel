@@ -6,12 +6,12 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
-import modzatsudan.ezstorage.ref.RefStrings;
+import modzatsudan.ezstorage.Tags;
 
 /** Custom buttons for the security block GUI and other stuff */
 public class ButtonBlue extends GuiButton {
 
-    private static final ResourceLocation tex = new ResourceLocation(RefStrings.MODID, "textures/gui/custom_gui.png");
+    private static final ResourceLocation tex = new ResourceLocation(Tags.MODID, "textures/gui/custom_gui.png");
 
     public ButtonBlue(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
         super(buttonId, x, y, widthIn, heightIn, buttonText);

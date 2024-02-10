@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-import modzatsudan.ezstorage.ref.RefStrings;
+import modzatsudan.ezstorage.Tags;
 import modzatsudan.ezstorage.registry.RegistryHelper;
 
 /** Helps with crafting recipe management */
@@ -19,18 +19,18 @@ public class RecipeHelper {
 
     /** Add a generic recipe */
     public static void addRecipe(IRecipe recipe) {
-        RECIPES.add(recipe.setRegistryName(new ResourceLocation(RefStrings.MODID, "recipe" + recipeCounter++)));
+        RECIPES.add(recipe.setRegistryName(new ResourceLocation(Tags.MODID, "recipe" + recipeCounter++)));
     }
 
     /** Add a shaped ore recipe */
     public static void addShapedRecipe(ItemStack result, Object... recipe) {
         addRecipe(
-                new ShapedOreRecipe(new ResourceLocation(RefStrings.MODID, "recipe" + recipeCounter), result, recipe));
+                new ShapedOreRecipe(new ResourceLocation(Tags.MODID, "recipe" + recipeCounter), result, recipe));
     }
 
     /** Add a shapeless ore recipe */
     public static void addShapelessRecipe(ItemStack result, Object... recipe) {
-        addRecipe(new ShapelessOreRecipe(new ResourceLocation(RefStrings.MODID, "recipe" + recipeCounter), result,
+        addRecipe(new ShapelessOreRecipe(new ResourceLocation(Tags.MODID, "recipe" + recipeCounter), result,
                 recipe));
     }
 }

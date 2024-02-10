@@ -14,6 +14,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.world.World;
 
+import org.jetbrains.annotations.NotNull;
+
 import modzatsudan.ezstorage.events.CoreEvents;
 
 /** The crafting-expansion storage core container */
@@ -23,6 +25,8 @@ public class ContainerStorageCoreCrafting extends ContainerStorageCore {
     public IInventory craftResult = new InventoryCraftResult();
     private World worldObj;
     private long lastTick = -1;
+    private boolean craftMatrixChanged = true;
+    private ItemStack craftResultCache;
 
     public ContainerStorageCoreCrafting(EntityPlayer player, World world, int x, int y, int z) {
         super(player, world, x, y, z);
@@ -41,6 +45,9 @@ public class ContainerStorageCoreCrafting extends ContainerStorageCore {
 
     @Override
     public void onCraftMatrixChanged(IInventory inventoryIn) {
+        if (!this.craftMatrixChanged) {
+            return;
+        }
         this.craftResult.setInventorySlotContents(0,
                 CraftingManager.findMatchingResult(this.craftMatrix, this.worldObj));
     }
@@ -54,12 +61,17 @@ public class ContainerStorageCoreCrafting extends ContainerStorageCore {
                 EntityPlayerMP mp = (EntityPlayerMP) playerIn;
                 mp.sendContainerToPlayer(this); // send an inventory sync
                                                 // message just in case
+                this.craftResultCache = null;
+                this.craftMatrixChanged = true;
                 return ItemStack.EMPTY;
             }
             lastTick = CoreEvents.serverTicks; // keep track of server ticks
         } else {
-            if (CoreEvents.clientTicks == lastTick)
+            if (CoreEvents.clientTicks == lastTick) {
+                this.craftResultCache = null;
+                this.craftMatrixChanged = true;
                 return ItemStack.EMPTY;
+            }
             lastTick = CoreEvents.clientTicks; // keep track of client ticks
         }
 
@@ -69,7 +81,7 @@ public class ContainerStorageCoreCrafting extends ContainerStorageCore {
             if (slotObject instanceof SlotCrafting) {
                 ItemStack[] recipe = new ItemStack[9];
                 for (int i = 0; i < 9; i++) {
-                    recipe[i] = this.craftMatrix.getStackInSlot(i);
+                    recipe[i] = this.craftMatrix.getStackInSlot(i).copy();
                 }
 
                 ItemStack itemstack1 = slotObject.getStack();
@@ -80,18 +92,26 @@ public class ContainerStorageCoreCrafting extends ContainerStorageCore {
                 int crafting = itemstack1.getCount();
                 for (int i = 0; i < itemstack1.getMaxStackSize(); i++) {
 
-                    if (slotObject.getHasStack() && slotObject.getStack().isItemEqual(itemstack1)) {
+                    if (slotObject.getHasStack()) {
                         if (crafting > maxStackSize) {
+                            this.craftResultCache = null;
+                            this.craftMatrixChanged = true;
                             return ItemStack.EMPTY;
                         }
                         itemstack1 = slotObject.getStack();
                         itemstack = itemstack1.copy();
+                        this.craftMatrixChanged = false;
+                        this.craftResultCache = itemstack;
                         if (crafted + itemstack1.getCount() > itemstack1.getMaxStackSize()) {
+                            this.craftResultCache = null;
+                            this.craftMatrixChanged = true;
                             return ItemStack.EMPTY;
                         }
                         boolean merged = this.mergeItemStack(itemstack1, this.rowCount() * 9, this.rowCount() * 9 + 36,
                                 true);
                         if (!merged) {
+                            this.craftResultCache = null;
+                            this.craftMatrixChanged = true;
                             return ItemStack.EMPTY;
                         } else {
 
@@ -100,11 +120,15 @@ public class ContainerStorageCoreCrafting extends ContainerStorageCore {
                             slotObject.onSlotChange(itemstack1, itemstack);
                             slotObject.onTake(playerIn, itemstack1);
 
-                            if (original.isItemEqual(slotObject.getStack())) {
-                                continue;
-                            }
-
                             tryToPopulateCraftingGrid(recipe, playerIn);
+                            if (this.craftMatrixChanged) {
+                                this.onCraftMatrixChanged(this.craftMatrix);
+                                this.craftResultCache = null;
+                                this.craftMatrixChanged = true;
+                                return ItemStack.EMPTY;
+                            } else {
+                                slotObject.putStack(this.craftResultCache);
+                            }
                         }
                     } else {
                         break;
@@ -112,15 +136,21 @@ public class ContainerStorageCoreCrafting extends ContainerStorageCore {
                 }
 
                 if (itemstack1.getCount() == itemstack.getCount()) {
+                    this.craftResultCache = null;
+                    this.craftMatrixChanged = true;
                     return ItemStack.EMPTY;
                 }
 
+                this.craftResultCache = null;
+                this.craftMatrixChanged = true;
                 return itemstack;
             } else {
                 ItemStack stackInSlot = slotObject.getStack();
                 slotObject.putStack(this.tileEntity.inventory.input(stackInSlot));
             }
         }
+        this.craftResultCache = null;
+        this.craftMatrixChanged = true;
         return ItemStack.EMPTY;
     }
 
@@ -134,7 +164,27 @@ public class ContainerStorageCoreCrafting extends ContainerStorageCore {
                     recipe[i] = this.craftMatrix.getStackInSlot(i).copy();
                 }
 
-                ItemStack result = super.slotClick(slotId, dragType, clickTypeIn, player);
+                ItemStack result;
+                if (!slotObject.getHasStack()) {
+                    result = ItemStack.EMPTY;
+                } else {
+
+                    int heldItemCountBeforeCraft = player.inventory.getItemStack().getCount();
+                    ItemStack resultBeforeCraft = slotObject.getStack().copy();
+                    this.craftMatrixChanged = false;
+                    result = super.slotClick(slotId, dragType, clickTypeIn, player);
+                    int heldItemCountAfterCraft = player.inventory.getItemStack().getCount();
+                    if (clickTypeIn == ClickType.PICKUP && heldItemCountBeforeCraft < heldItemCountAfterCraft) {
+                        this.tryToPopulateCraftingGrid(recipe, player);
+                        if (this.craftMatrixChanged) {
+                            this.onCraftMatrixChanged(this.craftMatrix);
+                        } else {
+                            slotObject.putStack(resultBeforeCraft);
+                        }
+                    }
+                    this.craftMatrixChanged = true;
+                }
+
                 if (!result.isEmpty()) {
                     tryToPopulateCraftingGrid(recipe, player);
                 }
@@ -145,19 +195,32 @@ public class ContainerStorageCoreCrafting extends ContainerStorageCore {
     }
 
     private void tryToPopulateCraftingGrid(ItemStack[] recipe, EntityPlayer playerIn) {
-        clearGrid(playerIn);
+        for (int i = 0; i < 9; ++i) {
+            ItemStack stack = this.craftMatrix.getStackInSlot(i);
+            if (!stack.isEmpty() && !stack.getItem().hasContainerItem(stack)) {
+                ItemStack result = this.tileEntity.input(stack);
+                this.craftMatrix.setInventorySlotContents(i, ItemStack.EMPTY);
+                if (!result.isEmpty()) {
+                    playerIn.dropItem(result, false);
+                }
+            }
+        }
+
         for (int j = 0; j < recipe.length; j++) {
             if (!recipe[j].isEmpty()) {
                 if (recipe[j].getCount() > 1) {
-                    continue;
-                } else {
-                    recipe[j].setCount(1);
+                    recipe[j].setCount(recipe[j].getCount() - 1);
                 }
                 Slot slot = getSlotFromInventory(this.craftMatrix, j);
+                if (slot != null && slot.getHasStack()) {
+                    slot = null;
+                }
                 if (slot != null) {
-                    ItemStack retreived = tileEntity.inventory.getItems(new ItemStack[] { recipe[j] });
+                    ItemStack retreived = tileEntity.inventory.getItemsForRecipeSync(new ItemStack[] { recipe[j] });
                     if (!retreived.isEmpty()) {
                         slot.putStack(retreived);
+                    } else {
+                        this.craftMatrixChanged = true;
                     }
                 }
             }
@@ -178,6 +241,11 @@ public class ContainerStorageCoreCrafting extends ContainerStorageCore {
     public void onContainerClosed(EntityPlayer playerIn) {
         clearGrid(playerIn);
         super.onContainerClosed(playerIn);
+    }
+
+    @Override
+    public boolean canMergeSlot(@NotNull ItemStack stack, Slot slotIn) {
+        return !slotIn.inventory.equals(this.craftResult) && super.canMergeSlot(stack, slotIn);
     }
 
     public void clearGrid(EntityPlayer playerIn) {
