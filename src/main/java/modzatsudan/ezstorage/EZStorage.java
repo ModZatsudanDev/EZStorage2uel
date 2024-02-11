@@ -16,12 +16,12 @@ import modzatsudan.ezstorage.config.EZConfig;
 import modzatsudan.ezstorage.events.CoreEvents;
 import modzatsudan.ezstorage.events.SecurityEvents;
 import modzatsudan.ezstorage.gui.GuiHandler;
-import modzatsudan.ezstorage.network.EZNetwork;
-import modzatsudan.ezstorage.proxy.CommonProxy;
-import modzatsudan.ezstorage.ref.EZTab;
-import modzatsudan.ezstorage.ref.Log;
-import modzatsudan.ezstorage.ref.RefStrings;
-import modzatsudan.ezstorage.util.EZStorageUtils;
+import modzatsudan.ezstorage.old.network.EZNetwork;
+import modzatsudan.ezstorage.old.proxy.CommonProxy;
+import modzatsudan.ezstorage.old.ref.EZTab;
+import modzatsudan.ezstorage.old.ref.Log;
+import modzatsudan.ezstorage.old.ref.RefStrings;
+import modzatsudan.ezstorage.old.util.EZStorageUtils;
 
 /** EZStorage main mod class */
 @Mod(modid = Tags.MODID,
