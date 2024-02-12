@@ -4,12 +4,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import modzatsudan.ezstorage.old.util.JointList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 
 import modzatsudan.ezstorage.config.EZConfig;
+import modzatsudan.ezstorage.old.util.JointList;
 import modzatsudan.ezstorage.old.util.SecurityOverrideHelper;
 
 /** The security box tile entity */

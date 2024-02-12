@@ -1,6 +1,5 @@
 package modzatsudan.ezstorage.old.proxy;
 
-import modzatsudan.ezstorage.old.registry.ClientRegistryHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,6 +8,7 @@ import net.minecraftforge.common.MinecraftForge;
 import modzatsudan.ezstorage.gui.client.GuiStorageCore;
 import modzatsudan.ezstorage.init.EZBlocks;
 import modzatsudan.ezstorage.init.EZItems;
+import modzatsudan.ezstorage.old.registry.ClientRegistryHelper;
 
 /** The mod's client proxy */
 public class ClientProxy extends CommonProxy {

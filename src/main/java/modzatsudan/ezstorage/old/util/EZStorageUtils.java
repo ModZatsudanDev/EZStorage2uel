@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import modzatsudan.ezstorage.old.tileentity.TileEntitySecurityBox;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -17,6 +16,7 @@ import net.minecraftforge.fml.common.ModContainer;
 
 import modzatsudan.ezstorage.block.BlockSecurityBox;
 import modzatsudan.ezstorage.block.StorageMultiblock;
+import modzatsudan.ezstorage.old.tileentity.TileEntitySecurityBox;
 
 /** Useful stuff */
 public class EZStorageUtils {

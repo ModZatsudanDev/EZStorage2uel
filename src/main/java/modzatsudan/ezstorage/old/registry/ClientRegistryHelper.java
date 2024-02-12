@@ -2,7 +2,6 @@ package modzatsudan.ezstorage.old.registry;
 
 import java.util.List;
 
-import modzatsudan.ezstorage.old.util.JointList;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -10,6 +9,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import modzatsudan.ezstorage.old.ref.Log;
+import modzatsudan.ezstorage.old.util.JointList;
 
 /** Clientside registry things */
 public class ClientRegistryHelper {

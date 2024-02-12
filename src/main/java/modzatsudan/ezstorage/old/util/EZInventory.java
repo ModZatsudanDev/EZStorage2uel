@@ -5,12 +5,12 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import modzatsudan.ezstorage.old.tileentity.TileEntityExtractPort;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import modzatsudan.ezstorage.gui.server.InventoryExtractList;
 import modzatsudan.ezstorage.integration.gregtech.GTUtil;
+import modzatsudan.ezstorage.old.tileentity.TileEntityExtractPort;
 import modzatsudan.ezstorage.old.tileentity.TileEntityStorageCore;
 
 /** The EZStorage inventory system */
@@ -125,7 +125,8 @@ public class EZInventory {
     }
 
     /** Extract items on whitelist / blacklist match */
-    public @Nonnull ItemStack getItemsExtractList(TileEntityExtractPort.EnumListMode mode, boolean roundRobin, InventoryExtractList list,
+    public @Nonnull ItemStack getItemsExtractList(TileEntityExtractPort.EnumListMode mode, boolean roundRobin,
+                                                  InventoryExtractList list,
                                                   int size, boolean peek) {
         // inventory is empty, treat it like IGNORE mode
         if (list.isEmpty())
@@ -162,12 +163,14 @@ public class EZInventory {
     }
 
     /** Extract items on whitelist / blacklist match */
-    public ItemStack getItemsExtractList(TileEntityExtractPort.EnumListMode mode, boolean roundRobin, InventoryExtractList list, int size) {
+    public ItemStack getItemsExtractList(TileEntityExtractPort.EnumListMode mode, boolean roundRobin,
+                                         InventoryExtractList list, int size) {
         return getItemsExtractList(mode, roundRobin, list, size, false);
     }
 
     /** Peeks items on whitelist / blacklist match */
-    public ItemStack peekItemsExtractList(TileEntityExtractPort.EnumListMode mode, boolean roundRobin, InventoryExtractList list) {
+    public ItemStack peekItemsExtractList(TileEntityExtractPort.EnumListMode mode, boolean roundRobin,
+                                          InventoryExtractList list) {
         return getItemsExtractList(mode, roundRobin, list, -1, true);
     }
 

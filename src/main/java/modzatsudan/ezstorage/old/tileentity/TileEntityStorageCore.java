@@ -6,10 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import modzatsudan.ezstorage.old.util.BlockRef;
-import modzatsudan.ezstorage.old.util.EZInventory;
-import modzatsudan.ezstorage.old.util.EZStorageUtils;
-import modzatsudan.ezstorage.old.util.ItemGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -30,6 +26,10 @@ import modzatsudan.ezstorage.gui.server.InventoryExtractList;
 import modzatsudan.ezstorage.init.EZBlocks;
 import modzatsudan.ezstorage.old.network.MessageFilterUpdate;
 import modzatsudan.ezstorage.old.ref.Log;
+import modzatsudan.ezstorage.old.util.BlockRef;
+import modzatsudan.ezstorage.old.util.EZInventory;
+import modzatsudan.ezstorage.old.util.EZStorageUtils;
+import modzatsudan.ezstorage.old.util.ItemGroup;
 
 /** The storage core tile entity */
 public class TileEntityStorageCore extends TileEntityBase {
@@ -58,7 +58,8 @@ public class TileEntityStorageCore extends TileEntityBase {
     }
 
     /** Retrieves the first applicable stack in the inventory with a set amount */
-    public ItemStack getFirstStack(int size, TileEntityExtractPort.EnumListMode mode, boolean roundRobin, InventoryExtractList list) {
+    public ItemStack getFirstStack(int size, TileEntityExtractPort.EnumListMode mode, boolean roundRobin,
+                                   InventoryExtractList list) {
         // make sure the round robin mode resets properly
         if (robinIndex >= this.inventory.slotCount()) robinIndex = 0;
 

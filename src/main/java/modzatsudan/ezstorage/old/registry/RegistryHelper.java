@@ -3,8 +3,6 @@ package modzatsudan.ezstorage.old.registry;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import modzatsudan.ezstorage.old.ref.Log;
-import modzatsudan.ezstorage.old.util.JointList;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -18,6 +16,8 @@ import modzatsudan.ezstorage.EZStorage;
 import modzatsudan.ezstorage.crafting.CraftingManager;
 import modzatsudan.ezstorage.init.EZBlocks;
 import modzatsudan.ezstorage.init.EZItems;
+import modzatsudan.ezstorage.old.ref.Log;
+import modzatsudan.ezstorage.old.util.JointList;
 
 /** Helps register items and blocks in the game */
 public class RegistryHelper {

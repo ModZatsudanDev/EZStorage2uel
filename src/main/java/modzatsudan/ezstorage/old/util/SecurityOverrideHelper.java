@@ -2,13 +2,13 @@ package modzatsudan.ezstorage.old.util;
 
 import java.util.List;
 
-import modzatsudan.ezstorage.old.tileentity.TileEntitySecurityBox;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.text.TextComponentString;
 
 import modzatsudan.ezstorage.Tags;
 import modzatsudan.ezstorage.old.ref.Log;
+import modzatsudan.ezstorage.old.tileentity.TileEntitySecurityBox;
 
 /** Helps with overrides for the security system */
 public class SecurityOverrideHelper {
@@ -38,7 +38,8 @@ public class SecurityOverrideHelper {
     }
 
     /** Sends a chat message to a list of secure players from another player */
-    public static void sendMessageToSecurePlayers(String chat, String chatSender, Iterable<TileEntitySecurityBox.SecurePlayer> list,
+    public static void sendMessageToSecurePlayers(String chat, String chatSender,
+                                                  Iterable<TileEntitySecurityBox.SecurePlayer> list,
                                                   EntityPlayerMP from) {
         PlayerList pl = from.getServer().getPlayerList();
         for (TileEntitySecurityBox.SecurePlayer p : list) {
